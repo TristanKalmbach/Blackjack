@@ -8,20 +8,27 @@ Blackjack::Blackjack()
 
 	m_numDealerWins = 0;
 	m_numPlayerWins = 0;
+
+	// This is so we can avoid looping the starting menu on the game loop.
+	m_skipMenu = false;
 }
 
 void Blackjack::GameLoop()
 {
-	// DisplayMenu & Options.
-	PromptStartingMenu();
+	// Prompt the starting menu
+	if (!m_skipMenu)
+	{
+		PromptStartingMenu();
 
-	int choice;
-	std::cin >> choice;
-	std::cout << std::endl; // Add another line
-	ParseChoice(choice);
+		int choice;
+		std::cin >> choice;
+		std::cout << std::endl; // Add another line
 
-	// Loop until either party busts.
-	while (!HasEitherPlayerBust())
+		ParseChoice(choice);
+	}
+
+	// Loop until either party busts or wins.
+	while (!HasEitherPlayerBust() && !HasEitherPlayerWon())
 	{
 		// Asks user if they want to hit or stay. The individual methods provide the logic.
 		AskHitOrStay();
@@ -29,15 +36,14 @@ void Blackjack::GameLoop()
 		// Update Counts
 		UpdateCount();
 
+		// Break the loop before the dealer AI is ran if someone has already won.
+		// This will make it so that quitting will not continue a game.
+		if (HasEitherPlayerWon())
+			break;
+
 		// This will handle the dealers logic.
 		HandleDealerAI();
 	}
-
-	// Notify player if he busts or not!
-	if (HasPlayerBust())
-		std::cout << "\nYou bust!" << std::endl;
-	else
-		std::cout << "\nDealer busts!" << std::endl;
 
 	// Update the counts for final notification.
 	UpdateCount();
@@ -53,17 +59,20 @@ void Blackjack::PlayAgain()
 	std::cin >> choice;
 
 	// Ask if they'd like to play again!
-	if (choice == 1)
+	if (choice == 2)
 	{
-		ClearCounts();
-		GameLoop();
-	}
-	else
-	{
+		system("cls"); // BAD NEWS BEARS. DON'T USE THIS IN THE REAL WORLD!!!
 		std::cout << "You won " << m_numPlayerWins << " times." << std::endl;
 		std::cout << "Dealer won " << m_numDealerWins << " times." << std::endl;
 		std::cout << "Thanks for playing!" << std::endl;
+		return;
 	}
+
+	m_skipMenu = true;
+
+	ClearCounts();
+	InitializeGame();
+	GameLoop();
 }
 
 void Blackjack::InitializeGame()
@@ -86,29 +95,10 @@ void Blackjack::InitializeGame()
 	InitializeDealerHand();
 }
 
-bool Blackjack::HasEitherPlayerBust()
-{
-	// Check players count to determine if a bust occurred.
-	if (GetPlayerCount() >= BUST)
-	{	
-		m_dealerBusted = true;
-		return true;
-	}
-
-	// Check dealers count to determine if a bust occurred.
-	if (GetDealerCount() >= BUST)
-	{
-		m_dealerBusted = true;
-		return true;
-	}
-
-	return false;
-}
-
 void Blackjack::ClearCounts()
 {
 	m_dealerBusted = false;
-	m_hasBusted = false;
+	m_playerBusted = false;
 
 	m_dealerCount = 0;
 	m_realCount = 0;
@@ -196,12 +186,22 @@ void Blackjack::Hit(bool dealer)
 	// Check if dealer. If yes, update dealer count.
 	if (dealer)
 	{
+		// Update real cout.
 		m_dealerCount += count;
+
+		// Handle dealer bust.
+		if (GetDealerCount() >= BUST)
+			Bust(true);
+
 		return;
 	}
 
-	// Update player count.
+	// Update real count.
 	m_realCount += count;
+
+	// Handle player bust.
+	if (GetPlayerCount() >= BUST)
+		Bust(false);
 }
 
 void Blackjack::Stay(bool dealer)
@@ -243,6 +243,26 @@ void Blackjack::Win(bool dealer)
 		m_playerWon = true;
 		++m_numPlayerWins;
 		std::cout << "\nYou win!" << std::endl;
+		UpdateCount();
+		PlayAgain();
+	}
+}
+
+void Blackjack::Bust(bool dealer)
+{
+	if (dealer)
+	{
+		m_dealerBusted = true;
+		std::cout << "\nDealer busts!" << std::endl;
+		++m_numPlayerWins;
+		UpdateCount();
+		PlayAgain();
+	}
+	else
+	{
+		m_playerBusted = true;
+		std::cout << "\nYou bust!" << std::endl;
+		++m_numDealerWins;
 		UpdateCount();
 		PlayAgain();
 	}

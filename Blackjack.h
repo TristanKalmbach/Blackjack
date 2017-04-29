@@ -14,7 +14,6 @@ public:
 	// Misc.
 	void GameLoop();
 	void InitializeGame();
-	bool HasEitherPlayerBust();
 	void ClearCounts();
 	void PlayAgain();
 
@@ -22,13 +21,17 @@ public:
 	void Hit(bool dealer);
 	void Stay(bool dealer);
 	void Win(bool dealer);
+	void Bust(bool dealer);
 
 	// Helper methods.
 	int GetPlayerCount() const { return m_realCount; }
 	int GetDealerCount() const { return m_dealerCount; }
 
 	bool HasDealerBust() const { return m_dealerBusted; }
-	bool HasPlayerBust() const { return m_hasBusted; }
+	bool HasPlayerBust() const { return m_playerBusted; }
+
+	bool HasEitherPlayerBust() { return HasDealerBust() || HasPlayerBust(); }
+	bool HasEitherPlayerWon() { return m_playerWon || m_dealerWon; }
 
 	// Menu
 	void PromptStartingMenu();
@@ -47,7 +50,7 @@ public:
 
 private:
 	// Busting mechanic
-	bool m_hasBusted;
+	bool m_playerBusted;
 	bool m_dealerBusted;
 
 	// Card counts
@@ -65,6 +68,8 @@ private:
 	// Win totals
 	int m_numPlayerWins;
 	int m_numDealerWins;
+
+	bool m_skipMenu;
 
 	std::unique_ptr<Deck> m_Deck;
 };

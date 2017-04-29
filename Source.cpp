@@ -7,6 +7,9 @@ int main()
 	std::unique_ptr<Blackjack> game(new Blackjack());
 	game->GameLoop();
 
-	system("pause");
+	// No system("pause");
+	std::cin.ignore();
+	std::cin.get();
+
 	return 0;
 }
