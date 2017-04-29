@@ -30,16 +30,13 @@ public:
 	bool HasDealerBust() const { return m_dealerBusted; }
 	bool HasPlayerBust() const { return m_hasBusted; }
 
-	void SetPlayerBust(bool value) { m_hasBusted = value; }
-	void SetDealerBust(bool value) { m_dealerBusted = value; }
-
 	// Menu
 	void PromptStartingMenu();
 	void ParseChoice(int choice);
 	void AskHitOrStay();
 
 	// Determine the real count of the card drawn.
-	int GetRealCount(Card card, bool firstHand);
+	int GetRealCount(Card card, bool dealer);
 
 	// Dealer AI
 	void HandleDealerAI();
@@ -61,10 +58,14 @@ private:
 	bool m_playerStay;
 	bool m_dealerStay;
 
-	// Win bools
+	// Win conditions
 	bool m_playerWon;
 	bool m_dealerWon;
 
-	Deck* m_Deck;
+	// Win totals
+	int m_numPlayerWins;
+	int m_numDealerWins;
+
+	std::unique_ptr<Deck> m_Deck;
 };
 
