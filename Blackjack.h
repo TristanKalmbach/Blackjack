@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Deck.h"
+#include "Player.h"
 
 #define BUST 22
 #define WIN 21
@@ -11,66 +12,54 @@ public:
     Blackjack();
     ~Blackjack() { }
 
+    static Blackjack& Instance()
+    {
+        static Blackjack instance;
+        return instance;
+    }
+
     // Misc.
     void GameLoop();
     void InitializeGame();
-    void ClearCounts();
     void PlayAgain();
+    void HandleStandoff();
 
-    // Game Mechanics
-    void Hit(bool dealer);
-    void Stay(bool dealer);
-    void Win(bool dealer);
-    void Bust(bool dealer);
-
-    // Helper methods.
-    int GetPlayerCount() const { return m_realCount; }
-    int GetDealerCount() const { return m_dealerCount; }
-
-    bool HasDealerBust() const { return m_dealerBusted; }
-    bool HasPlayerBust() const { return m_playerBusted; }
-
-    bool HasEitherPlayerBust() { return HasDealerBust() || HasPlayerBust(); }
-    bool HasEitherPlayerWon() { return m_playerWon || m_dealerWon; }
+    bool HasEitherPlayerBust() { return m_Dealer->HasBust() || m_Player->HasBust(); }
+    bool HasEitherPlayerWon() { return m_Dealer->HasWon() || m_Player->HasWon(); }
 
     // Menu
     void PromptStartingMenu();
     void ParseChoice(int choice);
-    void AskHitOrStay();
+    void HitOrStand();
 
     // Determine the real count of the card drawn.
     int GetRealCount(Card card, bool dealer);
 
     // Dealer AI
     void HandleDealerAI();
-    void InitializeDealerHand();
+    bool ShouldStand(int probibility);
 
     // Updates counts.
     void UpdateCount();
 
+    // Add win
+    void AddWin(bool dealer) { dealer ? ++m_numDealerWins : ++m_numPlayerWins; }
+
+    // Handle text color.
+    char* Color(int color = 7, char* Message = "") {
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+        return Message;
+    }
+
 private:
-    // Busting mechanic
-    bool m_playerBusted;
-    bool m_dealerBusted;
-
-    // Card counts
-    int m_realCount;
-    int m_dealerCount;
-
-    // Staying mechanic
-    bool m_playerStay;
-    bool m_dealerStay;
-
-    // Win conditions
-    bool m_playerWon;
-    bool m_dealerWon;
-
     // Win totals
     int m_numPlayerWins;
     int m_numDealerWins;
 
-    bool m_skipMenu;
+    std::shared_ptr<Deck> m_Deck;
 
-    std::unique_ptr<Deck> m_Deck;
+    Dealer* m_Dealer;
+    Player* m_Player;
 };
 
+#define sBlackjack Blackjack::Instance()

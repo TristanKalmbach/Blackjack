@@ -54,16 +54,16 @@ std::string Card::GetNameFromValue(int value) const
 {
     switch (value)
     {
-        case 0:
+        case CardValues::Ace:
             return "Ace";
             break;
-        case 10:
+        case CardValues::Jack:
             return "Jack";
             break;
-        case 11: 
+        case CardValues::Queen:
             return "Queen";
             break;
-        case 12:
+        case CardValues::King:
             return "King";
             break;
         default:
@@ -109,4 +109,14 @@ void Card::PrintCardDetails(bool dealer)
     }
 
     std::cout << this->GetNameFromValue(GetValue()) << " of " << this->GetNameFromSuit(GetSuit()) << std::endl;
+}
+
+bool Card::IsFaceCard() const
+{
+    if (GetValue() == CardValues::Jack 
+        || GetValue() == CardValues::Queen 
+        || GetValue() == CardValues::King)
+        return true;
+
+    return false;
 }

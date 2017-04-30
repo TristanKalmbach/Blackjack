@@ -13,6 +13,23 @@
 #define MAX_SUITS 4
 #define MAX_VALUE 13
 
+enum CardValues
+{
+    Ace = 0,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
+    Jack,
+    Queen,
+    King
+};
+
 class Card
 {
 public:
@@ -36,6 +53,9 @@ public:
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
         return Message;
     }
+
+    // Will return true or false if the card is a face card.
+    bool IsFaceCard() const;
 
 private:
     int m_cardSuit;
@@ -70,6 +90,9 @@ public:
         static std::mt19937 gen(rd());
         return select_randomly(start, end, gen);
     }
+
+    // Gets cards for iteration outside of class.
+    std::vector<Card> GetCards() { return m_Cards; }
 
 private:
     std::vector<Card> m_Cards;
