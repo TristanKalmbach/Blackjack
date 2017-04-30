@@ -5,8 +5,8 @@ Blackjack::Blackjack()
 {
     m_Deck.reset(new(Deck));
 
-    m_Player = new Player(m_Deck);
-    m_Dealer = new Dealer(m_Deck);
+    m_Player.reset(new Player(m_Deck));
+    m_Dealer.reset(new Dealer(m_Deck));
 
     m_numDealerWins = 0;
     m_numPlayerWins = 0;

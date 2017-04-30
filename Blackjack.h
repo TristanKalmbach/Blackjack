@@ -24,8 +24,8 @@ public:
     void PlayAgain();
     void HandleStandoff();
 
-    bool HasEitherPlayerBust() { return m_Dealer->HasBust() || m_Player->HasBust(); }
-    bool HasEitherPlayerWon() { return m_Dealer->HasWon() || m_Player->HasWon(); }
+    inline bool HasEitherPlayerBust() { return m_Dealer->HasBust() || m_Player->HasBust(); }
+    inline bool HasEitherPlayerWon() { return m_Dealer->HasWon() || m_Player->HasWon(); }
 
     // Menu
     void PromptStartingMenu();
@@ -43,10 +43,11 @@ public:
     void UpdateCount();
 
     // Add win
-    void AddWin(bool dealer) { dealer ? ++m_numDealerWins : ++m_numPlayerWins; }
+    inline void AddDealerWin() { m_numDealerWins += 1; }
+    inline void AddPlayerWin() { m_numPlayerWins += 1; }
 
     // Handle text color.
-    char* Color(int color = 7, char* Message = "") {
+    inline char* Color(int color = 7, char* Message = "") {
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
         return Message;
     }
@@ -58,8 +59,8 @@ private:
 
     std::shared_ptr<Deck> m_Deck;
 
-    Dealer* m_Dealer;
-    Player* m_Player;
+    std::shared_ptr<Dealer> m_Dealer;
+    std::shared_ptr<Player> m_Player;
 };
 
 #define sBlackjack Blackjack::Instance()

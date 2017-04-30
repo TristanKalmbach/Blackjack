@@ -67,7 +67,7 @@ void Dealer::Win()
     std::cout << "\nDealer wins!" << std::endl;
 
     // Add win to counter.
-    sBlackjack.AddWin(true);
+    sBlackjack.AddDealerWin();
 }
 
 void Dealer::Bust()
@@ -79,7 +79,7 @@ void Dealer::Bust()
     std::cout << "\nDealer busts!" << std::endl;
 
     // Add win to counter.
-    sBlackjack.AddWin(true);
+    sBlackjack.AddDealerWin();
 }
 
 /************************************************************************/
@@ -142,7 +142,7 @@ void Player::Win()
     SetWon(true);
 
     // Add win to counter.
-    sBlackjack.AddWin(false);
+    sBlackjack.AddPlayerWin();
 }
 
 void Player::Bust()
@@ -154,7 +154,7 @@ void Player::Bust()
     std::cout << "\nYou bust" << std::endl;
 
     // Add win to counter.
-    sBlackjack.AddWin(false);
+    sBlackjack.AddPlayerWin();
 }
 
 bool Player::HasFaceCard()
