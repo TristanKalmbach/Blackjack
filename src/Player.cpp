@@ -52,7 +52,7 @@ void Dealer::Hit()
 void Dealer::Stand()
 {
     // Set standing true.
-    SetStanding(true);
+    sBlackjack.SetDealerStanding(true);
 
     // Write to console.
     std::cout << "\nDealer stands!" << std::endl;
@@ -130,7 +130,7 @@ void Player::Hit()
 void Player::Stand()
 {
     // Set standing true.
-    SetStanding(true);
+    sBlackjack.SetPlayerStanding(true);
 }
 
 void Player::Win()

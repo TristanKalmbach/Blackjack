@@ -34,20 +34,29 @@ void Deck::ListDeckContents()
 
 void Deck::ShuffleDeck()
 {
-    std::random_shuffle(m_Cards.begin(), m_Cards.end());
+    // Randomly shuffle the deck.
+    std::mt19937 g(std::random_device{}());    
+    std::shuffle(m_Cards.begin(), m_Cards.end(), g);
 }
 
 Card Deck::DrawCard(bool identifyCard, bool dealer)
 {
-    // Randomly select a card from the shuffled deck.
-    auto card = select_randomly(m_Cards.begin(), m_Cards.end());
+    auto GetRandom = [](auto vec)
+    {
+        boost::container::stable_vector<Card> out;
+        std::sample(vec.begin(), vec.end(), std::back_inserter(out),
+            3, std::mt19937{ std::random_device{}() });
+
+        return out.front();
+    };
+
+    auto card =  GetRandom(m_Cards);
 
     // Only identify the card if told.
     if (identifyCard)
-        card->PrintCardDetails(dealer);
+        card.PrintCardDetails(dealer);
 
-    // Return a pointer to the card.
-    return *card;
+    return card;
 }
 
 std::string Card::GetNameFromValue(int value) const

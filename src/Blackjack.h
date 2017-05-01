@@ -26,6 +26,11 @@ public:
 
     inline bool HasEitherPlayerBust() { return m_Dealer->HasBust() || m_Player->HasBust(); }
     inline bool HasEitherPlayerWon() { return m_Dealer->HasWon() || m_Player->HasWon(); }
+    inline bool IsDealerStanding() const { return m_DealerStanding; }
+    inline bool IsPlayerStanding() const { return m_PlayerStanding; }
+
+    void SetDealerStanding(bool val) { m_DealerStanding = val; }
+    void SetPlayerStanding(bool val) { m_PlayerStanding = val; }
 
     // Menu
     void PromptStartingMenu();
@@ -57,10 +62,13 @@ private:
     int m_numPlayerWins;
     int m_numDealerWins;
 
-    std::shared_ptr<Deck> m_Deck;
+    boost::shared_ptr<Deck> m_Deck;
 
-    std::shared_ptr<Dealer> m_Dealer;
-    std::shared_ptr<Player> m_Player;
+    boost::shared_ptr<Dealer> m_Dealer;
+    boost::shared_ptr<Player> m_Player;
+
+    bool m_DealerStanding;
+    bool m_PlayerStanding;
 };
 
 #define sBlackjack Blackjack::Instance()

@@ -10,6 +10,9 @@ Blackjack::Blackjack()
 
     m_numDealerWins = 0;
     m_numPlayerWins = 0;
+
+    m_DealerStanding = false;
+    m_PlayerStanding = false;
 }
 
 void Blackjack::GameLoop()
@@ -22,7 +25,7 @@ void Blackjack::GameLoop()
     while (!(HasEitherPlayerBust() || HasEitherPlayerWon()))
     {
         // If both parties are standing, figure out who has the higher count. Then, break the loop.
-        if (m_Player->IsStanding() && m_Dealer->IsStanding())
+        if (IsDealerStanding() && IsPlayerStanding())
         {
             HandleStandoff();
             break;
@@ -208,9 +211,8 @@ void Blackjack::HandleDealerAI()
 // Returns true or false based on a probability of whether or not the dealer should stand.
 bool Blackjack::ShouldStand(int probibility)
 {
-    std::random_device rd;
     std::uniform_int_distribution<int> distribution(1, 100);
-    std::mt19937 engine(rd()); // Mersenne twister MT19937
+    std::mt19937 engine(std::random_device{}()); // Mersenne twister MT19937
 
     int value = distribution(engine);
     if (value > probibility)

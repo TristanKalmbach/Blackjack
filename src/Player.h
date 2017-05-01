@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include "Common.h"
 #include "Deck.h"
 
 enum BustState
@@ -12,7 +12,7 @@ enum BustState
 class Dealer
 {
 public:
-    explicit Dealer(std::shared_ptr<Deck> deck) : m_Deck(std::move(deck)) 
+    explicit Dealer(boost::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
     {
         Reset();
     }
@@ -48,7 +48,7 @@ public:
     void Bust();
 
 private:
-    std::shared_ptr<Deck> m_Deck;
+    boost::shared_ptr<Deck> m_Deck;
 
     int m_RealCount;
     bool m_Standing;
@@ -59,7 +59,7 @@ private:
 class Player
 {
 public:
-    explicit Player(std::shared_ptr<Deck> deck) : m_Deck(std::move(deck)) 
+    explicit Player(boost::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
     {
         Reset();
     }
@@ -94,11 +94,11 @@ public:
     void Win();
     void Bust();
 
-    std::vector<Card> GetCards() { return m_Deck->GetCards(); }
+    boost::container::stable_vector<Card> GetCards() { return m_Deck->GetCards(); }
     bool HasFaceCard();
 
 private:
-    std::shared_ptr<Deck> m_Deck;
+    boost::shared_ptr<Deck> m_Deck;
 
     int m_RealCount;
     bool m_Standing;

@@ -1,17 +1,6 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <array>
-#include <memory>
-#include <random>
-#include <iterator>
-#include <windows.h>
-
-#define MAX_DECK_SIZE 52
-#define MAX_SUITS 4
-#define MAX_VALUE 13
+#include "Common.h"
 
 enum CardValues
 {
@@ -48,11 +37,13 @@ public:
     // Will output the details of the card.
     void PrintCardDetails(bool dealer);
     
+#ifdef _WIN32
     // Handle text color.
     char* Color(int color = 7, char* Message = "") {
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
         return Message;
     }
+#endif
 
     // Will return true or false if the card is a face card.
     bool IsFaceCard() const;
@@ -76,26 +67,13 @@ public:
 
     Card DrawCard(bool identifyCard, bool dealer);
 
-    // Handle random elements.
-    template<typename Iter, typename RandomGenerator>
-    auto select_randomly(Iter start, Iter end, RandomGenerator& g) {
-        std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
-        std::advance(start, dis(g));
-        return start;
-    }
-
-    template<typename Iter>
-    auto select_randomly(Iter start, Iter end) {
-        static std::random_device rd;
-        static std::mt19937 gen(rd());
-        return select_randomly(start, end, gen);
-    }
+    // Get random element from container.
+    Card GetRandomCard(boost::container::stable_vector<Card> cards);
 
     // Gets cards for iteration outside of class.
-    std::vector<Card> GetCards() { return m_Cards; }
+    boost::container::stable_vector<Card> GetCards() { return m_Cards; }
 
 private:
-    std::vector<Card> m_Cards;
+    boost::container::stable_vector<Card> m_Cards;
 
 };
-
