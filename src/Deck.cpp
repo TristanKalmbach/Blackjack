@@ -112,12 +112,12 @@ void Card::PrintCardDetails(bool dealer)
     if (dealer)
     {
         Color(14);
-        std::cout << "\nDEALER: " << this->GetNameFromValue(GetValue()) << " of " << this->GetNameFromSuit(GetSuit()) << std::endl;
+        std::cout << "\nDEALER: " << GetNameFromValue(GetValue()) << " of " << GetNameFromSuit(GetSuit()) << std::endl;
         Color();
         return;
     }
 
-    std::cout << this->GetNameFromValue(GetValue()) << " of " << this->GetNameFromSuit(GetSuit()) << std::endl;
+    std::cout << GetNameFromValue(GetValue()) << " of " << GetNameFromSuit(GetSuit()) << std::endl;
 }
 
 bool Card::IsFaceCard() const
