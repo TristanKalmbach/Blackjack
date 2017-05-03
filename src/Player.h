@@ -3,12 +3,6 @@
 #include "Common.h"
 #include "Deck.h"
 
-enum BustState
-{
-    BUST_STATE_OK,
-    BUST_STATE_BUST
-};
-
 class Dealer
 {
 public:
@@ -44,8 +38,18 @@ public:
     // Game mechanics
     void Hit();
     void Stand();
-    void Win();
+    void Win(bool blackjack);
     void Bust();
+
+    // Handle the dealers hand.
+    void AddCardToHand(Card card);
+    boost::container::stable_vector<Card> m_DealerHand;
+
+    // Figure out if blackjack is in the hand.
+    bool HasBlackJack();
+
+    // Get the wincounter.
+    int GetNumWins() const { return m_numWins; }
 
 private:
     boost::shared_ptr<Deck> m_Deck;
@@ -54,6 +58,8 @@ private:
     bool m_Standing;
     bool m_Busted;
     bool m_Won;
+
+    int m_numWins;
 };
 
 class Player
@@ -77,7 +83,7 @@ public:
     void SetRealCount(int count) { m_RealCount = count; }
 
     // Get and Set standing.
-    bool IsStanding() { return m_Standing; }
+    bool IsStanding() const { return m_Standing; }
     void SetStanding(bool val) { m_Standing = val; }
 
     // Get and Set busting.
@@ -91,11 +97,22 @@ public:
     // Game mechanics
     void Hit();
     void Stand();
-    void Win();
+    void Win(bool blackjack);
     void Bust();
 
-    boost::container::stable_vector<Card> GetCards() { return m_Deck->GetCards(); }
-    bool HasFaceCard();
+    // Handle player hand.
+    void AddCardToHand(Card card);
+    boost::container::stable_vector<Card> GetCards() const { return m_PlayerHand; }
+    boost::container::stable_vector<Card> m_PlayerHand;
+    
+    // Iterate the player hand and find if they have a face card.
+    bool HasFaceCard() const;
+
+    // Figure out if blackjack is in the hand.
+    bool HasBlackJack();
+
+    // Get the wincounter.
+    int GetNumWins() const { return m_numWins; }
 
 private:
     boost::shared_ptr<Deck> m_Deck;
@@ -104,5 +121,7 @@ private:
     bool m_Standing;
     bool m_Busted;
     bool m_Won;
+
+    int m_numWins;
 };
 

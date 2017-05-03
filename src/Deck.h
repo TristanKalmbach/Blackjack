@@ -32,7 +32,7 @@ public:
     void SetValue(int value) { m_cardValue = value; }
 
     std::string GetNameFromValue(int value) const;
-    std::string GetNameFromSuit(int suit) const;
+    static std::string GetNameFromSuit(int suit);
 
     // Will output the details of the card.
     void PrintCardDetails(bool dealer);

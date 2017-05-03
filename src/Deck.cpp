@@ -65,46 +65,32 @@ std::string Card::GetNameFromValue(int value) const
     {
         case CardValues::Ace:
             return "Ace";
-            break;
         case CardValues::Jack:
             return "Jack";
-            break;
         case CardValues::Queen:
             return "Queen";
-            break;
         case CardValues::King:
             return "King";
-            break;
         default:
             return std::to_string(value + 1);
-            break;
     }
-
-    return std::string();
 }
 
-std::string Card::GetNameFromSuit(int suit) const
+std::string Card::GetNameFromSuit(int suit)
 {
     switch (suit)
     {
         case 0:
             return "Clubs";
-            break;
         case 1:
             return "Diamonds";
-            break;
         case 2:
             return "Hearts";
-            break;
         case 3:
             return "Spades";
-            break;
         default:
             return "Error";
-            break;
     }
-
-    return std::string();
 }
 
 void Card::PrintCardDetails(bool dealer)

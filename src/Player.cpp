@@ -12,8 +12,8 @@ void Dealer::InitializeHand()
     auto card2 = m_Deck->DrawCard(true, true);
 
     // Add the count of that card to the players real count.
-    int count1 = sBlackjack.GetRealCount(card1, true);
-    int count2 = sBlackjack.GetRealCount(card2, true);
+    int count1 = sBlackjack->GetRealCount(card1, true);
+    int count2 = sBlackjack->GetRealCount(card2, true);
 
     // Sum the count of the initial two cards.
     int finalCountOfInitialHand = count1 + count2;
@@ -22,10 +22,16 @@ void Dealer::InitializeHand()
 
 void Dealer::Reset()
 {
-    SetBust(false);
+    SetBust(BUST_STATE_NO_BUST);
     SetRealCount(0);
-    SetStanding(false);
-    SetWon(false);
+    SetStanding(STANDING_STATE_NOT_STANDING);
+    SetWon(WIN_STATE_LOSE);
+
+    // Erase the hand on reset.
+    m_DealerHand.clear();
+
+    // Reset win count.
+    m_numWins = 0;
 }
 
 void Dealer::Hit()
@@ -35,14 +41,23 @@ void Dealer::Hit()
 
     // Draw a card and get its count.
     auto newCard = m_Deck->DrawCard(true, true);
-    int count = sBlackjack.GetRealCount(newCard, true);
+
+    // Add the card to the hand.
+    AddCardToHand(newCard);
+
+    // Get the count.
+    int count = sBlackjack->GetRealCount(newCard, true);
 
     // Update real count.
     m_RealCount += count;
 
+    // Handle blackjack
+    if (HasBlackJack())
+        Dealer::Win(true);
+
     // Handle dealer win
     if (GetRealCount() == WIN)
-        Dealer::Win();
+        Dealer::Win(false);
 
     // Handle player bust.
     if (GetRealCount() >= BUST)
@@ -52,22 +67,25 @@ void Dealer::Hit()
 void Dealer::Stand()
 {
     // Set standing true.
-    sBlackjack.SetDealerStanding(true);
-
+    Dealer::SetStanding(STANDING_STATE_STANDING);
+        
     // Write to console.
     std::cout << "\nDealer stands!" << std::endl;
 }
 
-void Dealer::Win()
+void Dealer::Win(bool blackjack)
 {
     // Set win state.
-    SetWon(true);
+    SetWon(WIN_STATE_WIN);
 
-    // Write to console.
-    std::cout << "\nDealer wins!" << std::endl;
+    if (blackjack)
+        // Write to console
+        std::cout << "\nDEALER BLACKJACK!!!" << std::endl;
+    else
+        // Write to console.
+        std::cout << "\nDealer wins!" << std::endl;
 
-    // Add win to counter.
-    sBlackjack.AddDealerWin();
+    ++m_numWins;
 }
 
 void Dealer::Bust()
@@ -77,9 +95,41 @@ void Dealer::Bust()
 
     // Write to console.
     std::cout << "\nDealer busts!" << std::endl;
+}
 
-    // Add win to counter.
-    sBlackjack.AddDealerWin();
+void Dealer::AddCardToHand(Card card)
+{
+    m_DealerHand.push_back(card);
+}
+
+bool Dealer::HasBlackJack()
+{
+    // Check if the hand has only two cards.
+    if (m_DealerHand.size() == 2)
+        return false;
+
+    // Check for ace.
+    auto hasAce = [&] {
+        for (auto const &card : m_DealerHand) {
+            if (card.GetValue() == CardValues::Ace)
+                return true;
+        }
+
+        return false;
+    };
+
+    // Check for jack.
+    auto hasJack = [&] {
+        for (auto const &card : m_DealerHand) {
+            if (card.GetValue() == CardValues::Ace)
+                return true;
+        }
+
+        return false;
+    };
+
+    // Return true or false based on what we find.
+    return (hasAce() && hasJack());
 }
 
 /************************************************************************/
@@ -93,8 +143,8 @@ void Player::InitializeHand()
     auto card2 = m_Deck->DrawCard(true, false);
 
     // Add the count of that card to the players real count.
-    int count1 = sBlackjack.GetRealCount(card1, false);
-    int count2 = sBlackjack.GetRealCount(card2, false);
+    int count1 = sBlackjack->GetRealCount(card1, false);
+    int count2 = sBlackjack->GetRealCount(card2, false);
 
     // Sum the count of the initial two cards.
     int finalCountOfInitialHand = count1 + count2;
@@ -103,24 +153,39 @@ void Player::InitializeHand()
 
 void Player::Reset()
 {
-    SetBust(false);
+    SetBust(BUST_STATE_NO_BUST);
     SetRealCount(0);
-    SetStanding(false);
-    SetWon(false);
+    SetStanding(STANDING_STATE_NOT_STANDING);
+    SetWon(WIN_STATE_LOSE);
+
+    // Clear hand on reset.
+    m_PlayerHand.clear();
+
+    // Set win count to 0.
+    m_numWins = 0;
 }
 
 void Player::Hit()
 {
     // Draw a card and get its count.
     auto newCard = m_Deck->DrawCard(true, false);
-    int count = sBlackjack.GetRealCount(newCard, false);
+
+    // Add card to the hand.
+    AddCardToHand(newCard);
+
+    // Get the count.
+    int count = sBlackjack->GetRealCount(newCard, false);
 
     // Update real count.
     m_RealCount += count;
 
+    // Handle blackjack
+    if (HasBlackJack())
+        Player::Win(true);
+
     // Handle player win
     if (GetRealCount() == WIN)
-        Player::Win();
+        Player::Win(false);
 
     // Handle player bust.
     if (GetRealCount() >= BUST)
@@ -130,19 +195,26 @@ void Player::Hit()
 void Player::Stand()
 {
     // Set standing true.
-    sBlackjack.SetPlayerStanding(true);
+    SetStanding(STANDING_STATE_STANDING);
 }
 
-void Player::Win()
+void Player::Win(bool blackjack)
 {
-    // Write to console.
-    std::cout << "\nYou win!" << std::endl;
+    if (blackjack)
+    {
+        // Write to the console.
+        std::cout << "\n BLACKJACK!!!" << std::endl;
+    }
+    else
+    {   
+        // Write to console.
+        std::cout << "\nYou win!" << std::endl;
+    }
+
+    ++m_numWins;
 
     // Set win state.
     SetWon(true);
-
-    // Add win to counter.
-    sBlackjack.AddPlayerWin();
 }
 
 void Player::Bust()
@@ -152,16 +224,48 @@ void Player::Bust()
 
     // Write to console.
     std::cout << "\nYou bust" << std::endl;
-
-    // Add win to counter.
-    sBlackjack.AddPlayerWin();
 }
 
-bool Player::HasFaceCard()
+void Player::AddCardToHand(Card card)
+{
+    m_PlayerHand.push_back(card);
+}
+
+bool Player::HasFaceCard() const
 {
     for (auto cards : GetCards())
         if (cards.IsFaceCard())
             return true;
 
     return false;
+}
+
+bool Player::HasBlackJack()
+{
+    // Check if the hand has only two cards.
+    if (m_PlayerHand.size() == 2)
+        return false;
+
+    // Check for ace.
+    auto hasAce = [&] {
+        for (auto const &card : m_PlayerHand) {
+            if (card.GetValue() == CardValues::Ace)
+                return true;
+        }
+
+        return false;
+    };
+
+    // Check for jack.
+    auto hasJack = [&] {
+        for (auto const &card : m_PlayerHand) {
+            if (card.GetValue() == CardValues::Ace)
+                return true;
+        }
+
+        return false;
+    };
+
+    // Return true or false based on what we find.
+    return hasAce() && hasJack();
 }

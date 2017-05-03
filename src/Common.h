@@ -17,10 +17,29 @@
 #include <boost/container/string.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/smart_ptr/weak_ptr.hpp>
+#include <boost/algorithm/cxx11/any_of.hpp>
 
 #define MAX_DECK_SIZE 52
 #define MAX_SUITS 4
 #define MAX_VALUE 13
+
+enum StandingState
+{
+    STANDING_STATE_NOT_STANDING,
+    STANDING_STATE_STANDING
+};
+
+enum BustState
+{
+    BUST_STATE_NO_BUST,
+    BUST_STATE_BUST
+};
+
+enum WinState
+{
+    WIN_STATE_LOSE,
+    WIN_STATE_WIN
+};
 
 //typedef boost::int8_t int8;
 //typedef boost::int16_t int16;
