@@ -22,8 +22,13 @@ enum CardValues
 class Card
 {
 public:
-    Card(int suit, int value) : m_cardSuit(suit), m_cardValue(value), m_realValue(0) { }
-    ~Card() { }
+    Card(int suit, int value) : m_cardSuit(suit), m_cardValue(value), m_realValue(0)
+    {
+    }
+
+    ~Card()
+    {
+    }
 
     // Get Set
     int GetSuit() const { return m_cardSuit; }
@@ -35,11 +40,12 @@ public:
     static std::string GetNameFromSuit(int suit);
 
     // Will output the details of the card.
-    void PrintCardDetails(bool dealer);
-    
+    void PrintCardDetails(bool dealer) const;
+
 #ifdef _WIN32
     // Handle text color.
-    char* Color(int color = 7, char* Message = "") {
+    static char* Color(int color = 7, char* Message = "")
+    {
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
         return Message;
     }
@@ -59,7 +65,10 @@ class Deck
 {
 public:
     Deck();
-    ~Deck() { }
+
+    ~Deck()
+    {
+    }
 
     void InitializeDeck();
     void ListDeckContents();
@@ -67,13 +76,9 @@ public:
 
     Card DrawCard(bool identifyCard, bool dealer);
 
-    // Get random element from container.
-    Card GetRandomCard(boost::container::stable_vector<Card> cards);
-
     // Gets cards for iteration outside of class.
-    boost::container::stable_vector<Card> GetCards() { return m_Cards; }
+    boost::container::stable_vector<Card> GetCards() const { return m_Cards; }
 
 private:
     boost::container::stable_vector<Card> m_Cards;
-
 };

@@ -10,7 +10,10 @@ class Blackjack
 {
 public:
     Blackjack();
-    ~Blackjack() { }
+
+    ~Blackjack()
+    {
+    }
 
     static Blackjack* Instance();
 
@@ -19,9 +22,6 @@ public:
     void InitializeGame() const;
     void PlayAgain();
     void HandleStandoff() const;
-
-    bool HasEitherPlayerBust() const { return m_Dealer->HasBust() || m_Player->HasBust(); }
-    bool HasEitherPlayerWon() const { return m_Dealer->HasWon() || m_Player->HasWon(); }
 
     // Menu
     static void PromptStartingMenu();
@@ -44,6 +44,9 @@ public:
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
         return Message;
     }
+
+    // Game over conditions
+    bool IsGameOver() const;
 
 private:
     boost::shared_ptr<Deck> m_Deck;

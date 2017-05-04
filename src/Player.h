@@ -11,7 +11,9 @@ public:
         Reset();
     }
 
-    ~Dealer() { }
+    ~Dealer()
+    {
+    }
 
     // Give the initial hand.
     void InitializeHand();
@@ -70,7 +72,9 @@ public:
         Reset();
     }
 
-    ~Player() { }
+    ~Player()
+    {
+    }
 
     // Give the initial hand.
     void InitializeHand();
@@ -104,7 +108,7 @@ public:
     void AddCardToHand(Card card);
     boost::container::stable_vector<Card> GetCards() const { return m_PlayerHand; }
     boost::container::stable_vector<Card> m_PlayerHand;
-    
+
     // Iterate the player hand and find if they have a face card.
     bool HasFaceCard() const;
 
@@ -124,4 +128,3 @@ private:
 
     int m_numWins;
 };
-

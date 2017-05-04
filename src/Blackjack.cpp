@@ -17,12 +17,8 @@ Blackjack* Blackjack::Instance()
 
 void Blackjack::GameLoop()
 {
-    // Be sure the game loop will be executed only if the game isn't over.
-    if (HasEitherPlayerBust() || HasEitherPlayerWon())
-        return;
-
     // Loop until someone wins or busts.
-    while (!(HasEitherPlayerBust() || HasEitherPlayerWon()))
+    while (!IsGameOver())
     {
         // If both parties are standing, figure out who has the higher count. Then, break the loop.
         if (m_Dealer->IsStanding() && m_Player->IsStanding())
@@ -40,7 +36,7 @@ void Blackjack::GameLoop()
         UpdateCount();
 
         // Now, we're going to ask before the dealer AI starts, if someone won or busted. If they did, break the loop.
-        if (HasEitherPlayerBust() || HasEitherPlayerWon())
+        if (IsGameOver())
             break;
 
         // Now that the player has either hit or stand, nobody has won or lost and both parties
@@ -89,7 +85,7 @@ void Blackjack::InitializeGame() const
 {
     // Initialize the deck of cards and shuffle them.
     m_Deck->InitializeDeck();
-    
+
     // Give initial hand to dealer.
     m_Dealer->InitializeHand();
 
@@ -108,13 +104,13 @@ void Blackjack::ParseChoice(int choice) const
 {
     switch (choice)
     {
-        case 1:
-            InitializeGame();
-            break;
-        case 2:
-            exit(EXIT_FAILURE);
-        default:
-            break;
+    case 1:
+        InitializeGame();
+        break;
+    case 2:
+        exit(EXIT_FAILURE);
+    default:
+        break;
     }
 }
 
@@ -126,17 +122,16 @@ void Blackjack::HitOrStand() const
 
     switch (choice)
     {
-        case 1:
-            m_Player->Hit();
-            break;
-        case 2:
-            m_Player->Stand();
-            break;
-        default: // @TODO: Implement double/split.
-            std::cout << "Error. Choice does not exit." << std::endl;
-            break;
+    case 1:
+        m_Player->Hit();
+        break;
+    case 2:
+        m_Player->Stand();
+        break;
+    default: // @TODO: Implement double/split.
+        std::cout << "Error. Choice does not exit." << std::endl;
+        break;
     }
-
 }
 
 int Blackjack::GetRealCount(Card card, bool dealer) const
@@ -148,7 +143,7 @@ int Blackjack::GetRealCount(Card card, bool dealer) const
     if (card.IsFaceCard())
         return 10;
 
-    if (card.GetValue() == CardValues::Ace)
+    if (card.GetValue() == Ace)
     {
         // In the event that you draw an ace, we want to be sure it won't bust you. E.g., two aces.
         if (count + 11 >= BUST)
@@ -181,6 +176,23 @@ void Blackjack::UpdateCount() const
         std::cout << "Dealer Count: " << m_Dealer->GetRealCount() << std::endl;
         Color();
     }
+}
+
+bool Blackjack::IsGameOver() const
+{
+    if (m_Dealer->HasWon())
+        return true;
+
+    if (m_Dealer->HasBust())
+        return true;
+
+    if (m_Player->HasWon())
+        return true;
+
+    if (m_Player->HasBust())
+        return true;
+
+    return false;
 }
 
 // ---------------------------------------------

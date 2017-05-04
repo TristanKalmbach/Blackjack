@@ -53,22 +53,22 @@ void Dealer::Hit()
 
     // Handle blackjack
     if (HasBlackJack())
-        Dealer::Win(true);
+        Win(true);
 
     // Handle dealer win
     if (GetRealCount() == WIN)
-        Dealer::Win(false);
+        Win(false);
 
     // Handle player bust.
     if (GetRealCount() >= BUST)
-        Dealer::Bust();
+        Bust();
 }
 
 void Dealer::Stand()
 {
     // Set standing true.
-    Dealer::SetStanding(STANDING_STATE_STANDING);
-        
+    SetStanding(STANDING_STATE_STANDING);
+
     // Write to console.
     std::cout << "\nDealer stands!" << std::endl;
 }
@@ -79,10 +79,10 @@ void Dealer::Win(bool blackjack)
     SetWon(WIN_STATE_WIN);
 
     if (blackjack)
-        // Write to console
+    // Write to console
         std::cout << "\nDEALER BLACKJACK!!!" << std::endl;
     else
-        // Write to console.
+    // Write to console.
         std::cout << "\nDealer wins!" << std::endl;
 
     ++m_numWins;
@@ -109,9 +109,11 @@ bool Dealer::HasBlackJack()
         return false;
 
     // Check for ace.
-    auto hasAce = [&] {
-        for (auto const &card : m_DealerHand) {
-            if (card.GetValue() == CardValues::Ace)
+    auto hasAce = [&]
+    {
+        for (auto const& card : m_DealerHand)
+        {
+            if (card.GetValue() == Ace)
                 return true;
         }
 
@@ -119,9 +121,11 @@ bool Dealer::HasBlackJack()
     };
 
     // Check for jack.
-    auto hasJack = [&] {
-        for (auto const &card : m_DealerHand) {
-            if (card.GetValue() == CardValues::Ace)
+    auto hasJack = [&]
+    {
+        for (auto const& card : m_DealerHand)
+        {
+            if (card.GetValue() == Ace)
                 return true;
         }
 
@@ -181,15 +185,15 @@ void Player::Hit()
 
     // Handle blackjack
     if (HasBlackJack())
-        Player::Win(true);
+        Win(true);
 
     // Handle player win
     if (GetRealCount() == WIN)
-        Player::Win(false);
+        Win(false);
 
     // Handle player bust.
     if (GetRealCount() >= BUST)
-        Player::Bust();
+        Bust();
 }
 
 void Player::Stand()
@@ -206,7 +210,7 @@ void Player::Win(bool blackjack)
         std::cout << "\n BLACKJACK!!!" << std::endl;
     }
     else
-    {   
+    {
         // Write to console.
         std::cout << "\nYou win!" << std::endl;
     }
@@ -234,8 +238,15 @@ void Player::AddCardToHand(Card card)
 bool Player::HasFaceCard() const
 {
     for (auto cards : GetCards())
+    {
+        // Make sure the card has a suit and value.
+        if (!cards.GetSuit() || !cards.GetValue())
+            return false;
+
+        // If it's a face card, return true.
         if (cards.IsFaceCard())
             return true;
+    }
 
     return false;
 }
@@ -247,9 +258,11 @@ bool Player::HasBlackJack()
         return false;
 
     // Check for ace.
-    auto hasAce = [&] {
-        for (auto const &card : m_PlayerHand) {
-            if (card.GetValue() == CardValues::Ace)
+    auto hasAce = [&]
+    {
+        for (auto const& card : m_PlayerHand)
+        {
+            if (card.GetValue() == Ace)
                 return true;
         }
 
@@ -257,9 +270,11 @@ bool Player::HasBlackJack()
     };
 
     // Check for jack.
-    auto hasJack = [&] {
-        for (auto const &card : m_PlayerHand) {
-            if (card.GetValue() == CardValues::Ace)
+    auto hasJack = [&]
+    {
+        for (auto const& card : m_PlayerHand)
+        {
+            if (card.GetValue() == Ace)
                 return true;
         }
 
