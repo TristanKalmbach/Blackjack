@@ -23,24 +23,6 @@
 #define MAX_SUITS 4
 #define MAX_VALUE 13
 
-enum StandingState
-{
-    STANDING_STATE_NOT_STANDING,
-    STANDING_STATE_STANDING
-};
-
-enum BustState
-{
-    BUST_STATE_NO_BUST,
-    BUST_STATE_BUST
-};
-
-enum WinState
-{
-    WIN_STATE_LOSE,
-    WIN_STATE_WIN
-};
-
 enum CardValues
 {
     Ace = 0,

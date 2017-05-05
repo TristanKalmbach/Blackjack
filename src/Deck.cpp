@@ -7,7 +7,6 @@ Deck::Deck()
 
 Deck::~Deck()
 {
-    m_Cards.clear();
 }
 
 void Deck::InitializeDeck()

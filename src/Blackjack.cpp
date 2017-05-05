@@ -189,7 +189,7 @@ bool Blackjack::IsGameOver() const
 
 void Blackjack::HandleDealerAI() const
 {
-    sController->DisplayWait(1);
+    sController->DisplayWait(20);
 
     // Don't do anything if standing.
     if (m_Dealer->IsStanding())
@@ -205,7 +205,7 @@ void Blackjack::HandleDealerAI() const
     // If the dealer has an exact count of 17 and the player has a face card, we'll stand.
     if (m_Dealer->GetRealCount() == 17 && m_Player->HasFaceCard())
     {
-        m_Player->Stand();
+        m_Dealer->Stand();
         return;
     }
 

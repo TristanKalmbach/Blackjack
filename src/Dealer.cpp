@@ -5,11 +5,24 @@
 #include "Dealer.h"
 #include "Blackjack.h"
 
+Dealer::Dealer(boost::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
+{
+    Reset();
+}
+
+Dealer::~Dealer()
+{
+}
+
 void Dealer::InitializeHand()
 {
     // We want to give the dealer two cards, BUT we don't want to notify the player what both the cards are. Only one and the count.
     auto card1 = m_Deck->DrawCard(false, true);
     auto card2 = m_Deck->DrawCard(true, true);
+
+    // Add cards to dealer's hand.
+    m_DealerHand.push_back(card1);
+    m_DealerHand.push_back(card2);
 
     // Add the count of that card to the players real count.
     int count1 = sBlackjack->GetRealCount(card1, true);
@@ -22,10 +35,10 @@ void Dealer::InitializeHand()
 
 void Dealer::Reset()
 {
-    SetBust(BUST_STATE_NO_BUST);
+    SetBust(false);
     SetRealCount(0);
-    SetStanding(STANDING_STATE_NOT_STANDING);
-    SetWon(WIN_STATE_LOSE);
+    SetStanding(false);
+    SetWon(false);
 
     // Erase the hand on reset.
     m_DealerHand.clear();
@@ -67,7 +80,7 @@ void Dealer::Hit()
 void Dealer::Stand()
 {
     // Set standing true.
-    SetStanding(STANDING_STATE_STANDING);
+    SetStanding(true);
 
     // Write to console.
     std::cout << "\nDealer stands!" << std::endl;
@@ -76,7 +89,7 @@ void Dealer::Stand()
 void Dealer::Win(bool blackjack)
 {
     // Set win state.
-    SetWon(WIN_STATE_WIN);
+    SetWon(true);
 
     if (blackjack)
         // Write to console
@@ -91,7 +104,7 @@ void Dealer::Win(bool blackjack)
 void Dealer::Bust()
 {
     // Set bust state
-    SetBust(BUST_STATE_BUST);
+    SetBust(true);
 
     // Write to console.
     std::cout << "\nDealer busts!" << std::endl;
@@ -100,6 +113,15 @@ void Dealer::Bust()
 void Dealer::AddCardToHand(Card card)
 {
     m_DealerHand.push_back(card);
+}
+
+bool Dealer::HasFaceCard() const
+{
+    for (auto const &cards : m_DealerHand)
+        if (cards.IsFaceCard())
+            return true;
+
+    return false;
 }
 
 bool Dealer::HasBlackJack()
@@ -134,4 +156,9 @@ bool Dealer::HasBlackJack()
 
     // Return true or false based on what we find.
     return (hasAce() && hasJack());
+}
+
+int Dealer::GetNumWins() const
+{
+    return m_numWins;
 }

@@ -35,10 +35,10 @@ void Player::InitializeHand()
 
 void Player::Reset()
 {
-    SetBust(BUST_STATE_NO_BUST);
+    SetBust(false);
     SetRealCount(0);
-    SetStanding(STANDING_STATE_NOT_STANDING);
-    SetWon(WIN_STATE_LOSE);
+    SetStanding(false);
+    SetWon(false);
 
     // Clear hand on reset.
     m_PlayerHand.clear();
@@ -77,7 +77,7 @@ void Player::Hit()
 void Player::Stand()
 {
     // Set standing true.
-    SetStanding(STANDING_STATE_STANDING);
+    SetStanding(true);
 }
 
 void Player::Win(bool blackjack)
@@ -102,7 +102,7 @@ void Player::Win(bool blackjack)
 void Player::Bust()
 {
     // Set bust state
-    SetBust(BUST_STATE_BUST);
+    SetBust(true);
 
     // Write to console.
     std::cout << "\nYou bust" << std::endl;
