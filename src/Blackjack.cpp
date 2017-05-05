@@ -81,7 +81,7 @@ void Blackjack::HandleStandoff() const
         m_Player->Win(false);
 }
 
-void Blackjack::InitializeGame() const
+void Blackjack::InitializeGame()
 {
     // Initialize the deck of cards and shuffle them.
     m_Deck->InitializeDeck();
@@ -91,27 +91,9 @@ void Blackjack::InitializeGame() const
 
     // Give initial hand to player.
     m_Player->InitializeHand();
-}
 
-void Blackjack::PromptStartingMenu()
-{
-    std::cout << "---------- BLACKJACK	----------" << std::endl;
-    std::cout << "---------- 1.) Start Game ----------" << std::endl;
-    std::cout << "---------- 2.) Close Game ----------" << std::endl;
-}
-
-void Blackjack::ParseChoice(int choice) const
-{
-    switch (choice)
-    {
-    case 1:
-        InitializeGame();
-        break;
-    case 2:
-        exit(EXIT_FAILURE);
-    default:
-        break;
-    }
+    // Start the loop.
+    GameLoop();
 }
 
 void Blackjack::HitOrStand() const
@@ -178,6 +160,12 @@ void Blackjack::UpdateCount() const
     }
 }
 
+char* Blackjack::Color(int color, char* Message)
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+    return Message;
+}
+
 bool Blackjack::IsGameOver() const
 {
     if (m_Dealer->HasWon())
@@ -201,6 +189,8 @@ bool Blackjack::IsGameOver() const
 
 void Blackjack::HandleDealerAI() const
 {
+    sController->DisplayWait(1);
+
     // Don't do anything if standing.
     if (m_Dealer->IsStanding())
         return;
@@ -233,6 +223,8 @@ void Blackjack::HandleDealerAI() const
 // Returns true or false based on a probability of whether or not the dealer should stand.
 bool Blackjack::ShouldStand(int probibility)
 {
+    sController->DisplayWait(1);
+
     std::uniform_int_distribution<int> distribution(1, 100);
     std::mt19937 engine(std::random_device{}()); // Mersenne twister MT19937
 

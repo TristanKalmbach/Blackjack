@@ -1,84 +1,41 @@
 #pragma once
 
 #include "Common.h"
-
-enum CardValues
-{
-    Ace = 0,
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-    Jack,
-    Queen,
-    King
-};
-
-class Card
-{
-public:
-    Card(int suit, int value) : m_cardSuit(suit), m_cardValue(value), m_realValue(0)
-    {
-    }
-
-    ~Card()
-    {
-    }
-
-    // Get Set
-    int GetSuit() const { return m_cardSuit; }
-    void SetSuit(int suit) { m_cardSuit = suit; }
-    int GetValue() const { return m_cardValue; }
-    void SetValue(int value) { m_cardValue = value; }
-
-    std::string GetNameFromValue(int value) const;
-    static std::string GetNameFromSuit(int suit);
-
-    // Will output the details of the card.
-    void PrintCardDetails(bool dealer) const;
-
-#ifdef _WIN32
-    // Handle text color.
-    static char* Color(int color = 7, char* Message = "")
-    {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-        return Message;
-    }
-#endif
-
-    // Will return true or false if the card is a face card.
-    bool IsFaceCard() const;
-
-private:
-    int m_cardSuit;
-    int m_cardValue;
-
-    int m_realValue;
-};
+#include "Card.h"
 
 class Deck
 {
 public:
     Deck();
 
-    ~Deck()
-    {
-    }
+    ~Deck();
 
+
+    /**
+     * \brief Initialize the deck by iterating [13][4] times to place cards into the card vector.
+     * \brief The cards will be shuffled on initialization.
+     */
     void InitializeDeck();
-    void ListDeckContents();
+
+
+    /**
+     * \brief Will use the standard std::shuffle with Mersenne Twister randomization.
+     * \brief The deck will be shuffled completely.
+     */
     void ShuffleDeck();
 
+
+    /**
+     * \brief Will randomly select an elemnt from the m_Cards vector and return the card object.
+     * \param identifyCard Identifies the card based on a boolean value.
+     * \param dealer Ensures that some processes will only happen if the dealer is the one drawing.
+     * \return Returns a card object so we can use its details.
+     */
     Card DrawCard(bool identifyCard, bool dealer);
 
-    // Gets cards for iteration outside of class.
-    boost::container::stable_vector<Card> GetCards() const { return m_Cards; }
-
 private:
+    /**
+     * \brief The choice container for storing the cards. Consider this a deck.
+     */
     boost::container::stable_vector<Card> m_Cards;
 };

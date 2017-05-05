@@ -41,6 +41,23 @@ enum WinState
     WIN_STATE_WIN
 };
 
+enum CardValues
+{
+    Ace = 0,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
+    Jack,
+    Queen,
+    King
+};
+
 //typedef boost::int8_t int8;
 //typedef boost::int16_t int16;
 //typedef boost::int32_t int32;

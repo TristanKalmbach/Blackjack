@@ -1,17 +1,15 @@
-#pragma once
-
-#include "Common.h"
+﻿#pragma once
 #include "Deck.h"
 
-class Player
+class Dealer
 {
 public:
-    explicit Player(boost::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
+    explicit Dealer(boost::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
     {
         Reset();
     }
 
-    ~Player()
+    ~Dealer()
     {
     }
 
@@ -43,13 +41,9 @@ public:
     void Win(bool blackjack);
     void Bust();
 
-    // Handle player hand.
+    // Handle the dealers hand.
     void AddCardToHand(Card card);
-    boost::container::stable_vector<Card> GetCards() const { return m_PlayerHand; }
-    boost::container::stable_vector<Card> m_PlayerHand;
-
-    // Iterate the player hand and find if they have a face card.
-    bool HasFaceCard() const;
+    boost::container::stable_vector<Card> m_DealerHand;
 
     // Figure out if blackjack is in the hand.
     bool HasBlackJack();

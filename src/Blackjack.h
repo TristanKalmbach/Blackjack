@@ -2,6 +2,8 @@
 
 #include "Deck.h"
 #include "Player.h"
+#include "Dealer.h"
+#include "Controller.h"
 
 #define BUST 22
 #define WIN 21
@@ -17,35 +19,26 @@ public:
 
     static Blackjack* Instance();
 
-    // Misc.
     void GameLoop();
-    void InitializeGame() const;
+
+    void InitializeGame();
+
     void PlayAgain();
+
     void HandleStandoff() const;
 
-    // Menu
-    static void PromptStartingMenu();
-    void ParseChoice(int choice) const;
     void HitOrStand() const;
 
-    // Determine the real count of the card drawn.
     int GetRealCount(Card card, bool dealer) const;
 
-    // Dealer AI
     void HandleDealerAI() const;
+
     static bool ShouldStand(int probibility);
 
-    // Updates counts.
     void UpdateCount() const;
 
-    // Handle text color.
-    static char* Color(int color = 7, char* Message = "")
-    {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-        return Message;
-    }
+    static char* Color(int color = 7, char* Message = "");
 
-    // Game over conditions
     bool IsGameOver() const;
 
 private:
