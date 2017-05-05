@@ -5,6 +5,15 @@
 /*                          PLAYER METHODS                              */
 /************************************************************************/
 
+Player::Player(boost::shared_ptr<Deck> deck): m_Deck(std::move(deck))
+{
+    Reset();
+}
+
+Player::~Player()
+{
+}
+
 void Player::InitializeHand()
 {
     // Now, give player a hand.
@@ -14,6 +23,10 @@ void Player::InitializeHand()
     // Add the count of that card to the players real count.
     int count1 = sBlackjack->GetRealCount(card1, false);
     int count2 = sBlackjack->GetRealCount(card2, false);
+
+    // Add cards to hand.
+    m_PlayerHand.push_back(card1);
+    m_PlayerHand.push_back(card2);
 
     // Sum the count of the initial two cards.
     int finalCountOfInitialHand = count1 + count2;
@@ -148,4 +161,9 @@ bool Player::HasBlackJack()
 
     // Return true or false based on what we find.
     return hasAce() && hasJack();
+}
+
+int Player::GetNumWins() const
+{
+    return m_numWins;
 }
