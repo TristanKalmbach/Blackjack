@@ -10,7 +10,7 @@ public:
      * \brief Initializes the player class.
      * \param deck The player's deck.
      */
-    explicit Player(boost::shared_ptr<Deck> deck);
+    explicit Player(std::shared_ptr<Deck> deck);
 
     /**
      * \brief Destroys player class.
@@ -126,12 +126,12 @@ public:
      * \brief Gets the container that contains the players card objects.
      * \return Returns the players hand as a vector.
      */
-    boost::container::stable_vector<Card> GetCards() const { return m_PlayerHand; }
+    Cards GetCards() const { return m_PlayerHand; }
 
 private:
-    boost::shared_ptr<Deck> m_Deck;
+    std::shared_ptr<Deck> m_Deck;
 
-    boost::container::stable_vector<Card> m_PlayerHand;
+    Cards m_PlayerHand;
 
     int m_RealCount;
     int m_numWins;

@@ -5,7 +5,7 @@
 #include "Dealer.h"
 #include "Blackjack.h"
 
-Dealer::Dealer(boost::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
+Dealer::Dealer(std::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
 {
     Reset();
 }
@@ -113,6 +113,54 @@ void Dealer::Bust()
 void Dealer::AddCardToHand(Card card)
 {
     m_DealerHand.push_back(card);
+}
+
+void Dealer::HandleAI()
+{
+    sController->DisplayWait(100);
+
+    // Don't do anything if standing.
+    if (IsStanding())
+        return;
+
+    // If the dealer's count is 21, stand. This should never execute.
+    if (GetRealCount() == WIN)
+    {
+        Stand();
+        return;
+    }
+
+    // If the dealer has an exact count of 17 and the player has a face card, we'll stand.
+    if (GetRealCount() == 17 && HasFaceCard())
+    {
+        Stand();
+        return;
+    }
+
+    // Get likelihood of standing based on percentage of probability. 
+    auto shouldStand = [](int prob)
+    {
+        sController->DisplayWait(1);
+
+        std::uniform_int_distribution<int> distribution(1, 100);
+        std::mt19937 engine(std::random_device{}()); // Mersenne twister MT19937
+
+        auto value = distribution(engine);
+        if (value > prob)
+            return false;
+
+        return true;
+    };
+
+    // If the dealer's count is 17 or more and there is a face card, make it a 85% chance the dealer stays.
+    if (GetRealCount() >= 17 && shouldStand(85) && !HasFaceCard())
+    {
+        Stand();
+        return;
+    }
+
+    // By default, we want the dealer to hit.
+    Hit();
 }
 
 bool Dealer::HasFaceCard() const

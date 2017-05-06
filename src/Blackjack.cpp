@@ -9,6 +9,10 @@ Blackjack::Blackjack()
     m_Dealer.reset(new Dealer(m_Deck));
 }
 
+Blackjack::~Blackjack()
+{
+}
+
 Blackjack* Blackjack::Instance()
 {
     static Blackjack instance;
@@ -27,10 +31,8 @@ void Blackjack::GameLoop()
             break;
         }
 
-        // First thing that happens is the game is initialized and both parties are given a hand.
-        // Next step is that we need to ask if they want to hit or stand.
-        if (!m_Dealer->IsStanding() && !m_Player->IsStanding())
-            HitOrStand();
+        // Handle the game mechanics for the player.
+        DoAction();
 
         // Update the counts to the player after he hits or stands.
         UpdateCount();
@@ -41,7 +43,7 @@ void Blackjack::GameLoop()
 
         // Now that the player has either hit or stand, nobody has won or lost and both parties
         // Aren't standing the dealer AI needs to do some work.
-        HandleDealerAI();
+        m_Dealer->HandleAI();
     }
 
     // By reaching this point, someone has either bust or won.
@@ -51,34 +53,28 @@ void Blackjack::GameLoop()
 
 void Blackjack::PlayAgain()
 {
-    int choice;
-    std::cout << "\nWould you like to play again? 1.) Yes, 2.) No.";
-    std::cin >> choice;
+    auto replay = sController->AskReplay();
 
     // Ask if they'd like to play again!
-    if (choice == 2)
+    if (!replay)
     {
-        system("cls"); // BAD NEWS BEARS. DON'T USE THIS IN THE REAL WORLD!!!
-        std::cout << "You won " << m_Player->GetNumWins() << " times." << std::endl;
-        std::cout << "Dealer won " << m_Dealer->GetNumWins() << " times." << std::endl;
-        std::cout << "Thanks for playing!" << std::endl;
+        sController->UpdateEndGame(m_Player->GetNumWins(), m_Dealer->GetNumWins());
         return;
     }
 
-    // If the player decides to play again, we'll reset the game and start over.
+    // Clear saved data.
     m_Dealer->Reset();
     m_Player->Reset();
+
+    // Restart the game.
     InitializeGame();
     GameLoop();
 }
 
 void Blackjack::HandleStandoff() const
 {
-    // If the dealer has a higher count than the player, he wins.
-    if (m_Dealer->GetRealCount() > m_Player->GetRealCount())
-        m_Dealer->Win(false);
-    else
-        m_Player->Win(false);
+    auto dealerWin = m_Dealer->GetRealCount() > m_Player->GetRealCount();
+    return dealerWin ? m_Dealer->Win(false) : m_Player->Win(false);
 }
 
 void Blackjack::InitializeGame()
@@ -96,30 +92,28 @@ void Blackjack::InitializeGame()
     GameLoop();
 }
 
-void Blackjack::HitOrStand() const
+void Blackjack::DoAction() const
 {
-    std::cout << "\nHit: 1.) or Stand: 2.) ";
-    int choice;
-    std::cin >> choice;
-
-    switch (choice)
+    auto mechanic = sController->GetMechanicChoice();
+    switch (mechanic)
     {
-    case 1:
-        m_Player->Hit();
-        break;
-    case 2:
-        m_Player->Stand();
-        break;
-    default: // @TODO: Implement double/split.
-        std::cout << "Error. Choice does not exit." << std::endl;
-        break;
+        case Mechanic::Hit:
+            m_Player->Hit();
+        case Mechanic::Stand: 
+            m_Player->Stand();
+        case Mechanic::Double:
+            break;
+        case Mechanic::Split: 
+            break;
+        default:
+            break;
     }
 }
 
 int Blackjack::GetRealCount(Card card, bool dealer) const
 {
     // Get the count, so we can later determine if Ace will be used as 11 or 1.
-    int count = dealer ? m_Dealer->GetRealCount() : m_Player->GetRealCount();
+    auto count = dealer ? m_Dealer->GetRealCount() : m_Player->GetRealCount();
 
     // Returns 11 for face cards.
     if (card.IsFaceCard())
@@ -141,8 +135,8 @@ int Blackjack::GetRealCount(Card card, bool dealer) const
 
 void Blackjack::UpdateCount() const
 {
-    int dealerCount = m_Dealer->GetRealCount();
-    int playerCount = m_Player->GetRealCount();
+    auto dealerCount = m_Dealer->GetRealCount();
+    auto playerCount = m_Player->GetRealCount();
 
     // If player has a winning count and neither party has won, let player win.
     if (dealerCount == WIN && !(m_Dealer->HasWon() || m_Player->HasWon()))
@@ -181,56 +175,4 @@ bool Blackjack::IsGameOver() const
         return true;
 
     return false;
-}
-
-// ---------------------------------------------
-//					DEALER AI
-// ---------------------------------------------
-
-void Blackjack::HandleDealerAI() const
-{
-    sController->DisplayWait(20);
-
-    // Don't do anything if standing.
-    if (m_Dealer->IsStanding())
-        return;
-
-    // If the dealer's count is 21, stand. This should never execute.
-    if (m_Dealer->GetRealCount() == WIN)
-    {
-        m_Dealer->Stand();
-        return;
-    }
-
-    // If the dealer has an exact count of 17 and the player has a face card, we'll stand.
-    if (m_Dealer->GetRealCount() == 17 && m_Player->HasFaceCard())
-    {
-        m_Dealer->Stand();
-        return;
-    }
-
-    // If the dealer's count is 17 or more and there is a face card, make it a 85% chance the dealer stays.
-    if (m_Dealer->GetRealCount() >= 17 && ShouldStand(85) && !m_Player->HasFaceCard())
-    {
-        m_Dealer->Stand();
-        return;
-    }
-
-    // By default, we want the dealer to hit.
-    m_Dealer->Hit();
-}
-
-// Returns true or false based on a probability of whether or not the dealer should stand.
-bool Blackjack::ShouldStand(int probibility)
-{
-    sController->DisplayWait(1);
-
-    std::uniform_int_distribution<int> distribution(1, 100);
-    std::mt19937 engine(std::random_device{}()); // Mersenne twister MT19937
-
-    int value = distribution(engine);
-    if (value > probibility)
-        return false;
-
-    return true;
 }

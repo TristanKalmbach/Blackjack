@@ -22,7 +22,30 @@ public:
      */
     static void DisplayWait(int loops);
 
+    /**
+     * \brief Will either start the game or end the game.
+     * \param choice Choice to start the game or close the window.
+     */
     static void HandleChoice(int choice);
+
+    /**
+     * \brief Gets a mechanic for the game.
+     * \return Returns the game mechanic the player wants to do.
+     */
+    static Mechanic GetMechanicChoice();
+
+    /**
+     * \brief Determines if a new game is created.
+     * \return True or false, if they want to play again.
+     */
+    static bool AskReplay();
+
+    /**
+     * \brief Writes to console whe game ends.
+     * \param playerWinCount Number of player wins.
+     * \param dealerWinCount Number of dealer wins.
+     */
+    static void UpdateEndGame(int playerWinCount, int dealerWinCount);
 };
 
 #define sController Controller::Instance()

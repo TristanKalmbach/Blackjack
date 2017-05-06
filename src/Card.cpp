@@ -1,6 +1,6 @@
 ﻿#include "Card.h"
 
-Card::Card(int suit, int value): m_cardSuit(suit), m_cardValue(value), m_realValue(0)
+Card::Card(int suit, int value) : m_cardSuit(suit), m_cardValue(value), m_realValue(0)
 {
 }
 
@@ -52,7 +52,7 @@ void Card::PrintCardDetails(bool dealer) const
         return;
     }
 
-    std::cout << GetNameFromValue(GetValue()) << " of " << GetNameFromSuit(GetSuit()) << std::endl;
+    std::cout << "\nYou: " << GetNameFromValue(GetValue()) << " of " << GetNameFromSuit(GetSuit()) << std::endl;
 }
 
 char* Card::Color(int color, char* Message)

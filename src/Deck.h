@@ -37,5 +37,5 @@ private:
     /**
      * \brief The choice container for storing the cards. Consider this a deck.
      */
-    boost::container::stable_vector<Card> m_Cards;
+    Cards m_Cards;
 };

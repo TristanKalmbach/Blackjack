@@ -5,7 +5,7 @@
 /*                          PLAYER METHODS                              */
 /************************************************************************/
 
-Player::Player(boost::shared_ptr<Deck> deck): m_Deck(std::move(deck))
+Player::Player(std::shared_ptr<Deck> deck): m_Deck(std::move(deck))
 {
     Reset();
 }
