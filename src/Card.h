@@ -2,6 +2,9 @@
 
 #include "Common.h"
 
+import std.core;
+import std.memory;
+
 class Card
 {
 public:

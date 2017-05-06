@@ -1,6 +1,9 @@
 #include "Blackjack.h"
 #include "Player.h"
 
+import std.core;
+import std.memory;
+
 Blackjack::Blackjack()
 {
     m_Deck.reset(new(Deck));

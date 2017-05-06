@@ -1,5 +1,8 @@
 ﻿#include "Controller.h"
 
+import std.core;
+import std.memory;
+
 Controller* Controller::Instance()
 {
     static Controller instance;
@@ -39,7 +42,7 @@ void Controller::DisplayWait(int loops)
 
 void Controller::HandleChoice(int choice)
 {
-    boost::shared_ptr<Blackjack> game(new Blackjack());
+    std::shared_ptr<Blackjack> game(new Blackjack());
     if (!game)
         return;
 

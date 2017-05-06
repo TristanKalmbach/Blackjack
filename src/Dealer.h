@@ -1,5 +1,9 @@
 ﻿#pragma once
 #include "Deck.h"
+#include <memory>
+
+import std.core;
+import std.memory;
 
 class Dealer
 {
@@ -8,7 +12,7 @@ public:
      * \brief Initializes the dealer class.
      * \param deck The dealer's deck.
      */
-    explicit Dealer(boost::shared_ptr<Deck> deck);
+    explicit Dealer(std::shared_ptr<Deck> deck);
 
     /**
      * \brief Destroys dealer class.
@@ -124,12 +128,12 @@ public:
      * \brief Gets the container that contains the dealers card objects.
      * \return Returns the dealers hand as a vector.
      */
-    boost::container::stable_vector<Card> GetCards() const { return m_DealerHand; }
+    std::vector<Card> GetCards() const { return m_DealerHand; }
 
 private:
-    boost::shared_ptr<Deck> m_Deck;
+    std::shared_ptr<Deck> m_Deck;
 
-    boost::container::stable_vector<Card> m_DealerHand;
+    std::vector<Card> m_DealerHand;
 
     int m_RealCount;
     int m_numWins;

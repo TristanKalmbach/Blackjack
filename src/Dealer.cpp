@@ -5,7 +5,10 @@
 #include "Dealer.h"
 #include "Blackjack.h"
 
-Dealer::Dealer(boost::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
+import std.core;
+import std.memory;
+
+Dealer::Dealer(std::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
 {
     Reset();
 }

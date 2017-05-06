@@ -1,5 +1,8 @@
 ﻿#include "Card.h"
 
+import std.core;
+import std.memory;
+
 Card::Card(int suit, int value): m_cardSuit(suit), m_cardValue(value), m_realValue(0)
 {
 }

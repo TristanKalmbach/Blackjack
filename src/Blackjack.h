@@ -5,6 +5,9 @@
 #include "Dealer.h"
 #include "Controller.h"
 
+import std.core;
+import std.memory;
+
 #define BUST 22
 #define WIN 21
 
@@ -42,10 +45,10 @@ public:
     bool IsGameOver() const;
 
 private:
-    boost::shared_ptr<Deck> m_Deck;
+    std::shared_ptr<Deck> m_Deck;
 
-    boost::shared_ptr<Dealer> m_Dealer;
-    boost::shared_ptr<Player> m_Player;
+    std::shared_ptr<Dealer> m_Dealer;
+    std::shared_ptr<Player> m_Player;
 };
 
 #define sBlackjack Blackjack::Instance()

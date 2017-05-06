@@ -3,6 +3,9 @@
 #include "Common.h"
 #include "Card.h"
 
+import std.core;
+import std.memory;
+
 class Deck
 {
 public:
@@ -37,5 +40,5 @@ private:
     /**
      * \brief The choice container for storing the cards. Consider this a deck.
      */
-    boost::container::stable_vector<Card> m_Cards;
+    std::vector<Card> m_Cards;
 };

@@ -1,5 +1,8 @@
 #include "Deck.h"
 
+import std.core;
+import std.memory;
+
 Deck::Deck()
 {
     InitializeDeck();
@@ -38,7 +41,7 @@ Card Deck::DrawCard(bool identifyCard, bool dealer)
     // Randomize the elements and select whichever is in the front of the vector.
     auto GetRandom = [](auto vec)
     {
-        boost::container::stable_vector<Card> out;
+        std::container::stable_vector<Card> out;
         std::sample(vec.begin(), vec.end(), std::back_inserter(out), 3, std::mt19937{std::random_device{}()});
         return out.front();
     };

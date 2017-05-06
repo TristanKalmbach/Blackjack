@@ -1,11 +1,14 @@
 #include "Player.h"
 #include "Blackjack.h"
 
+import std.core;
+import std.memory;
+
 /************************************************************************/
 /*                          PLAYER METHODS                              */
 /************************************************************************/
 
-Player::Player(boost::shared_ptr<Deck> deck): m_Deck(std::move(deck))
+Player::Player(std::shared_ptr<Deck> deck): m_Deck(std::move(deck))
 {
     Reset();
 }
