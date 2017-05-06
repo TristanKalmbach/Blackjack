@@ -3,7 +3,6 @@
 #include "Deck.h"
 #include "Player.h"
 #include "Dealer.h"
-#include "Controller.h"
 
 #define BUST 22
 #define WIN 21

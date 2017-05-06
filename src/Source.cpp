@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Deck.h"
-#include "Blackjack.h"
+#include "Controller.h"
 
 int main()
 {

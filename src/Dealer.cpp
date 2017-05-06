@@ -4,6 +4,7 @@
 
 #include "Dealer.h"
 #include "Blackjack.h"
+#include "Controller.h"
 
 Dealer::Dealer(std::shared_ptr<Deck> deck) : m_Deck(std::move(deck))
 {
